@@ -21,7 +21,7 @@ class GeneralController extends Controller
 
     public function services()
     {
-        $services =  Service::all();
+        $services =  Service::orderBy('status')->get();
 
 
         return response()->json([
@@ -40,7 +40,7 @@ class GeneralController extends Controller
             ->take($limit)
             ->get();
 
-        $services = Service::all();
+        $services = Service::orderBy('status')->get();
 
         return response()->json([
             'transactions' => TransactionResource::collection($transactions),

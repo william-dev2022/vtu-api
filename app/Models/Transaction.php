@@ -28,5 +28,10 @@ class Transaction extends Model
     ]; 
 
 
+    protected function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     //field to return as array
 }

@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Http\Resources\TransactionResource;
 use App\Models\DataPlan;
 use App\Services\ApiRequestService;
+use App\Services\PaystackApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -15,10 +16,15 @@ use Illuminate\Support\Facades\Log;
 class UserTransactionController extends Controller
 {
 
-    public function __construct(protected ApiRequestService $apiRequestService)
+    public function __construct(protected ApiRequestService $apiRequestService, protected PaystackApiService $paystackApiService)
     {
         $this->apiRequestService = $apiRequestService;
+        $this->paystackApiService = $paystackApiService;
     }
+
+
+
+
     public function  buy_data(Request $request)
     {
         $request->validate([

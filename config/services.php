@@ -45,5 +45,9 @@ return [
         'token' => env('PLUGIN_API_KEY'),
         'base_url' => env('PLUGIN_API_BASE_URL', 'https://pluginng.com/api'),
     ],
+    'paystack' => [
+        'secret' => env('PAYSTACK_API_KEY'),
+        'base_url' => env('PAYSTACK_BASE_URL', 'https://api.paystack.co'),
+    ],
 
 ];

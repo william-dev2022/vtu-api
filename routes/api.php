@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\TestController;
 use App\Http\Controllers\Api\V1\UserAccountController;
 use App\Http\Controllers\Api\V1\UserAuthenticationController;
 use App\Http\Controllers\Api\V1\UserTransactionController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,4 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/app/initalize', [GeneralController::class, 'init']);
     Route::post('/account/set-pin', [UserAccountController::class, 'set_pin']);
+    Route::post('/payment/verify', [PaymentController::class, 'verify_payment']);
+    Route::post('/payment/manual-payment', [PaymentController::class, 'manual_payment']);
 });

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\TransactionType;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TransactionCollection;
 use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -27,8 +26,6 @@ class UserAccountController extends Controller
             return response()->json(['message' => 'Something went wrong'], 500);
         }
     }
-
-
 
     public function deposit(Request $request)
     {
@@ -78,7 +75,6 @@ class UserAccountController extends Controller
             200
         );
     }
-
 
     public function set_pin(Request $request)
     {
