@@ -7,6 +7,7 @@ use App\Services\PaystackApiService;
 use Illuminate\Http\Request;
 use App\Enums\TransactionType;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Http\Resources\TransactionResource;
 
 class PaymentController extends Controller
@@ -147,5 +148,95 @@ class PaymentController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Something went wrong'], 500);
         }
+    }
+
+
+    public function handleWebhook(Request $request)
+    {
+        // Get Paystack signature from headers
+        $paystackSignature = $request->header('x-paystack-signature');
+
+        // Get raw request payload
+        $payload = $request->getContent();
+
+        // Compute your own HMAC hash using your Paystack secret key
+        $computedHash = hash_hmac('sha512', $payload, config('services.paystack.secret'));
+
+        // Compare the computed hash with the Paystack signature
+        if ($paystackSignature !== $computedHash) {
+            return response()->json(['message' => 'Invalid signature'], 401);
+        }
+
+        // ✅ Signature is valid — continue processing the event
+        $data = $request->all();
+
+        // Example: handle successful payment
+        if ($data['event'] === 'charge.success') {
+            $result = $data['data'];
+            $reference = $result['reference'];
+
+            $transactionExists =  Transaction::where('type', TransactionType::DEPOSIT->value)
+                ->where('reference', $reference)
+                ->exists();
+
+            if ($transactionExists) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Transaction Handled',
+                ], 400);
+            }
+
+            $metadata = $data['metadata']['custom_fields'][0] ?? null;
+            $amount = $result['amount'];
+            $channel = $result['channel'];
+            $paid_at = $result['paid_at'];
+
+            //get the user by accessing metadata
+            $user_id = $metadata['id'] ?? null;
+            $phone_number = $metadata['phone_number'] ?? null;
+
+            if (!$phone_number  || !$user_id || !$reference) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid metadata',
+                ], 400);
+            }
+
+            $user  = User::find($user_id);
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid user',
+                ], 400);
+            }
+
+            //get user
+            try {
+                $transaction = Transaction::create([
+                    'user_id' => $user->id,
+                    'amount' => $amount,
+                    'type' => TransactionType::DEPOSIT->value,
+                    'description' => 'Deposit',
+                    'reference' => $reference,
+                    'status' => 'completed',
+                    'meta' => [
+                        'channel' => $channel,
+                        'reference' => $reference
+                    ],
+                ]);
+
+                return response()->json([
+                    'data' => new TransactionResource($transaction),
+                ], 200);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $th,
+                ], 400);
+            }
+        }
+
+        return response()->json(['message' => 'Webhook handled'], 200);
     }
 }

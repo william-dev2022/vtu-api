@@ -11,4 +11,11 @@ class Service extends Model
         'created_at',
         'updated_at',
     ];
+
+    protected $fillable = [
+        "name",
+        "link",
+        "icon",
+        "status",
+    ];
 }

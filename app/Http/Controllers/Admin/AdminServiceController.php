@@ -25,7 +25,7 @@ class AdminServiceController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.services.create');
     }
 
     /**
@@ -33,7 +33,21 @@ class AdminServiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string'],
+            'icon' => ['string'],
+            'link' => ['string'],
+            'status' => ['string'],
+        ]);
+
+
+
+        $service = Service::create([
+            'name' => $request->name,
+            'link' => $request->link,
+            'icon' => $request->icon,
+            'status' => $request->status,
+        ]);
     }
 
     /**
