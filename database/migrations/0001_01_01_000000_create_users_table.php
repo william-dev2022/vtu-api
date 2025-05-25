@@ -32,7 +32,6 @@ return new class extends Migration
                 'role' => 'user',
                 'name' => 'user',
                 'phone_number' => '+2348144308214',
-                'pin' => Hash::make('4444'), // hashed PIN
                 'is_verified' => true,
                 'status' => 'active',
                 'password' => Hash::make('12345678'), // hashed password
@@ -41,7 +40,6 @@ return new class extends Migration
                 'role' => 'user',
                 'name' => 'User',
                 'phone_number' => '+2348144308215',
-                'pin' => Hash::make('4444'), // hashed PIN
                 'is_verified' => true,
                 'status' => 'active',
                 'password' => Hash::make('12345678'), // hashed password

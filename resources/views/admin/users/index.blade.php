@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-6xl w-full mx-auto py-10 text-black">
+<div class="w-full max-w-6xl py-10 mx-auto text-black">
 
-    <div class="flex flex-col bg-white mt-20 rounded">
+    <div class="flex flex-col mt-20 bg-white rounded">
         <div class="-m-1.5 overflow-x-auto">
             <div class="p-1.5 min-w-full inline-block align-middle">
                 <div class="overflow-hidden rounded-lg ">
@@ -60,16 +60,7 @@
                                             <i class="text-base fa fa-eye"></i>
                                         </a>
 
-                                        <a href="/" type="button"
-                                            class="flex items-center justify-center px-1 py-1 text-blue-600">
-                                            <i class="text-base fa fa-users"></i>
-                                        </a>
-
-                                        <a href="/" type="button"
-                                            class="flex items-center justify-center px-1 py-1 text-blue-500">
-                                            <i class="text-base fa fa-futbol-o"></i>
-
-                                        </a>
+                                     
                                     </div>
                                 </td>
                             </tr>

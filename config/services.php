@@ -49,5 +49,9 @@ return [
         'secret' => env('PAYSTACK_API_KEY'),
         'base_url' => env('PAYSTACK_BASE_URL', 'https://api.paystack.co'),
     ],
+    'termii' => [
+        'secret' => env('TERMII_API_KEY'),
+        'base_url' => env('TERMII_BASE_URL', 'https://v3.api.termii.com'),
+    ],
 
 ];

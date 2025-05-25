@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'phoneNumber' => $this->phone_number,
             'isVerified' => $this->is_verified,
             'status' => $this->status,
+            'hasPin' => $this->pin ? true : false,
         ];
     }
 }

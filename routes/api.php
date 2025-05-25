@@ -30,8 +30,8 @@ Route::get('/exam-plans', [GeneralController::class, 'exam_plans']);
 
 Route::get('/services', [GeneralController::class, 'services']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/send-verification-code', [UserAuthenticationController::class, 'sendVerificationCode'])->middleware('throttle:1,1');;
-    Route::post('/check-verification-code', [UserAuthenticationController::class, 'checkVerificationCode'])->middleware('throttle:2,1');;
+    Route::post('/send-verification-code', [UserAuthenticationController::class, 'sendVerificationCode'])->middleware('throttle:5,1');
+    Route::post('/check-verification-code', [UserAuthenticationController::class, 'checkVerificationCode'])->middleware('throttle:5,1');;
 
     Route::get('/account/balance', [UserAccountController::class, 'balance']);
     Route::post('/buy-data', [UserTransactionController::class, 'buy_data'])->middleware('throttle:10,1');

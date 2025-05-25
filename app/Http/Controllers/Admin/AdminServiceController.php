@@ -34,22 +34,37 @@ class AdminServiceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string'],
-            'icon' => ['string'],
-            'link' => ['string'],
-            'status' => ['string'],
+            'name' => ['required', 'string', 'unique:services,name'],
+            'icon' => ['nullable', 'string'],
+            'link' => ['nullable', 'string'],
+            'status' => ['required', 'string'],
         ]);
 
+        try {
+            Service::create([
+                'name' => $request->name,
+                'link' => $request->link,
+                'icon' => $request->icon,
+                'status' => $request->status,
+            ]);
 
-
-        $service = Service::create([
-            'name' => $request->name,
-            'link' => $request->link,
-            'icon' => $request->icon,
-            'status' => $request->status,
-        ]);
+            return redirect()->route('admin.services.index')->with('success', 'Service created successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Service creation failed');
+        }
     }
 
+
+    public function update_status(Request $request)
+    {
+        $sevice = Service::find($request->id);
+        if ($sevice) {
+            $sevice->status = $request->status;
+            $sevice->save();
+            return response()->json(['message' => 'Service updated successfully']);
+        }
+        return response()->json(['message' => 'Service not found'], 404);
+    }
     /**
      * Display the specified resource.
      */
@@ -79,6 +94,12 @@ class AdminServiceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $service = Service::find($id);
+        if ($service) {
+            $service->delete();
+            return redirect()->route('services.index')->with('success', 'Service deleted successfully');
+        } else {
+            return redirect()->back()->with('error', 'Service not found');
+        }
     }
 }

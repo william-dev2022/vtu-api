@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="">
-    <form id="courseForm"  class="py-10" method="POST">
+    <form id="courseForm" action="{{ route('services.store') }}" class="py-10" method="POST">
         @csrf
 
         <div class="max-w-2xl px-4 py-8 mx-auto space-y-4 text-xs bg-white rounded-md shadow text-slate-700">
@@ -13,7 +13,7 @@
                     </label>
                     <div class="mt-1">
                         <input type="text" name="name" id="name"
-                            class="block w-full p-2 text-xs border rounded-md border-slate-100 ring-0 focus:border-slate-400 text-slate-600 focus:ring-0 sm:text-sm"
+                            class="block w-full p-2 text-xs border rounded-md border-slate-100 ring-0 focus!:border-slate-400 text-slate-600 focus:ring-0 sm:text-sm focus-visible:border-transparent "
                             required>
                         @error('name')
                         <p class="text-red-500">{{ $message }}</p>
@@ -26,8 +26,7 @@
                     </label>
                     <div class="mt-1">
                         <input type="number" name="link" id="link"
-                            class="block w-full p-2 border rounded-md border-slate-100 ring-0 focus:ring-0 focus:border-slate-300 sm:text-sm"
-                            required>
+                            class="block w-full p-2 border rounded-md border-slate-100 ring-0 focus:ring-0 focus:border-slate-300 sm:text-sm">
                         @error('link')
                         <p class="text-red-500">{{ $message }}</p>
                         @enderror

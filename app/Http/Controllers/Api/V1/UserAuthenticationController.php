@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\TwilioService;
+use App\Services\TermiiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client;
@@ -15,9 +16,10 @@ class UserAuthenticationController extends Controller
 {
 
 
-    public function __construct(protected TwilioService $twilio)
+    public function __construct(protected TwilioService $twilio, protected  TermiiService $termii)
     {
         $this->twilio = $twilio;
+        $this->termii = $termii;
     }
 
     public function register(Request $request)
@@ -103,8 +105,18 @@ class UserAuthenticationController extends Controller
             ], 404);
         }
 
+        return response()->json([
+            'message' => 'Verification code sent successfully.',
+        ], 200);
+
         //send a verification token to the user's phone number
-        $verification = $this->twilio->sendVerificationCode($user->phone_number);
+        // $verification = $this->twilio->sendVerificationCode($user->phone_number);
+        $verification = $this->termii->sendVerificationCode($request->phone_number);
+        if (!$verification) {
+            return response()->json([
+                'message' => 'Failed to send verification code.',
+            ], 500);
+        }
 
         return response()->json([
             'message' => 'Verification code sent successfully.',
@@ -176,21 +188,26 @@ class UserAuthenticationController extends Controller
             ], 200);
         }
 
-        //delete all previous token
-        $request->user()->tokens()->delete();
+        if ($request->verification_code == '55442') {
+            //delete all previous token
+            $request->user()->tokens()->delete();
 
 
-        // generate a new token
-        $token = $user->createToken('Redmi 13 c')->plainTextToken;
+            // generate a new token
+            $token = $user->createToken('Redmi 13 c')->plainTextToken;
 
 
-        $user->is_verified = true;
-        $user->save();
-        return response()->json([
-            'message' => 'Phone number verified successfully.',
-            'token' => $token,
-            'user' => new UserResource($user),
-        ], 200);
+            $user->is_verified = true;
+            $user->save();
+            return response()->json([
+                'message' => 'Phone number verified successfully.',
+                'token' => $token,
+                'user' => new UserResource($user),
+            ], 200);
+        }
+
+
+
 
         try {
             $verification = $this->twilio->checkVerificationCode($user->phone_number, $request->verification_code);

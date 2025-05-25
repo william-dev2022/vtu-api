@@ -1,8 +1,10 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="w-full max-w-4xl mx-auto text-black">
-    <div class="flex flex-col mt-5 bg-white rounded">
+<div class="w-full max-w-6xl py-5 mx-auto text-black">
+
+
+    <div class="flex flex-col bg-white rounded">
         <div class="-m-1.5 overflow-x-auto">
             <div class="p-1.5 min-w-full inline-block align-middle">
                 <div class="overflow-hidden rounded-lg ">
@@ -12,45 +14,51 @@
                                 <th scope="col"
                                     class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start ">
                                     Name</th>
-
+                                <th scope="col"
+                                    class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start ">
+                                    Type</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start ">
+                                    Price</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start ">
+                                    Date</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start ">
                                     Status</th>
-                                {{-- <th scope="col"
-                                    class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start ">
-                                    Icon</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start ">
-                                    Link</th> --}}
+
                                 <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-end ">
                                     Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            @isset($services)
-                            @foreach ($services as $service)
+                            @isset($transactions)
+                            @foreach ($transactions as $transaction)
                             <tr>
                                 <td class="px-6 py-4 text-xs font-medium text-gray-800 whitespace-wrap ">
-                                    {{$service->name}}</td>
-
-                                <td id="{{$service->id .'status'}}"
-                                    class="px-6 py-4 text-xs text-gray-800 capitalize whitespace-nowrap">
-                                    {{$service->status}}
-                                </td>
-                                {{-- <td class="px-6 py-4 text-xs font-medium text-gray-800 whitespace-wrap ">
-                                    {{$service->icon}}</td>
+                                    {{$transaction->user->name}}</td>
+                                <td class="px-6 py-4 text-xs font-medium text-gray-800 whitespace-wrap ">
+                                    {{$transaction->type}}</td>
                                 <td class="px-6 py-4 text-xs text-gray-800 whitespace-nowrap ">
-                                    {{ $service->link }}
-                                </td> --}}
+                                    @formatCurrency($transaction->amount)
+                                </td>
+                                <td class="px-6 py-4 text-xs text-gray-800 whitespace-nowrap ">
+                                    @formatDate($transaction->created_at)
+                                </td>
+                                <td id="{{$transaction->id .'status'}}"
+                                    class="px-6 py-4 text-xs text-gray-800 whitespace-nowrap ">
+                                    {{$transaction->status}}
+                                </td>
+
                                 <td class="items-center py-4 text-xs font-medium ">
-                                    <div class="flex items-center justify-end pr-2 space-x-3">
+                                    <div class="flex items-center justify-end pr-2 space-x-1">
 
                                         <div class="flex items-center gap-x-3">
-                                            <label for="{{$service->id .'checkbox'}}"
+                                            <label for="{{$transaction->id .'checkbox'}}"
                                                 class="relative inline-block h-4 cursor-pointer w-7">
-                                                <input type="checkbox" id="{{$service->id .'checkbox'}}"
-                                                    data-id="{{$service->id}}" class="sr-only peer"
-                                                    {{strtolower($service->status) === 'active'?
+                                                <input type="checkbox" id="{{$transaction->id .'checkbox'}}"
+                                                    data-id="{{$transaction->id}}" class="sr-only peer"
+                                                    {{$transaction->status === 'completed'?
                                                 'checked' : ''}}
                                                 >
                                                 <span
@@ -60,11 +68,17 @@
                                             </label>
                                         </div>
 
-                                        <form action='{{route('services.destroy', $service->id )}}' method='POST'>
+                                        {{-- <a href="{{route('transactions.show', $transaction->id) }}" type="button"
+                                            class="flex items-center justify-center px-1 py-1 text-blue-500">
+                                            <i class="text-base fa fa-edit"></i>
+                                        </a> --}}
+
+                                        <form action='/transaction/deposit/{{ $transaction->id }}' method='POST'>
                                             @method('DELETE')
                                             @csrf
+
                                             <button type="submit"
-                                                class="flex items-center justify-center p-2 text-white rounded bg-red-950">
+                                                class="flex items-center justify-center px-1 py-1 text-blue-500">
                                                 <i class="text-base fa fa-trash"></i>
 
                                             </button>
@@ -73,8 +87,11 @@
                                     </div>
                                 </td>
                             </tr>
+
                             @endforeach
                             @endisset
+
+
                         </tbody>
                     </table>
                 </div>
@@ -88,10 +105,10 @@
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         let transactionId = this.getAttribute('data-id');
-        let status = this.checked ? 'active' : 'inactive'; // Adjust based on your statuses
+        let status = this.checked ? 'completed' : 'pending'; // Adjust based on your statuses
 
         console.log(transactionId)
-        fetch('/update-service-status', {
+        fetch('/update-transaction-status', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -101,11 +118,11 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Service updated:', data);
+            console.log('Transaction updated:', data);
             document.getElementById(transactionId +'status').innerText = status;
         })
         .catch(error => {
-            console.error('Error service transaction:', error);
+            console.error('Error updating transaction:', error);
         });
     });
 });

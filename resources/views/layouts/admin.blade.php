@@ -78,6 +78,16 @@
                     <a class="px-2 py-2" href="/services">Services</a>
                     <a class="px-2 py-2" href="/users">Users</a>
                     <a class="px-2 py-2" href="/plans">Plans</a>
+
+                    {{-- Logout --}}
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <a class="block px-2 py-2" href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); this.closest('form').submit();">
+                            {{-- {{ __('Log Out') }} --}}
+                            <i class='fa fa-sign-out '></i>
+                        </a>
+                    </form>
                 </div>
 
 
@@ -89,12 +99,22 @@
 
             <!-- Mobile Menu -->
             <div class="md:hidden">
-                <div x-show="open" x-transition class="absolute left-0 w-full pl-4 bg-white top-14">
-                    <a class="block px-2 py-2" href="/admin">Dashboard</a>
-                    <a class="block px-2 py-2" href="">Tournament</a>
-                    <a class="block px-2 py-2" href="">New Tournament</a>
-                    <a class="block px-2 py-2" href="">Upload Result</a>
-                    <a class="block px-2 py-2" href="">Gallery</a>
+                <div x-show="open" x-transition class="absolute left-0 flex flex-col w-full pl-4 bg-white top-14">
+                    <a class="px-2 py-2" href="/">Dashboard</a>
+                    <a class="px-2 py-2" href="/transactions">Transactions</a>
+                    <a class="px-2 py-2" href="/services">Services</a>
+                    <a class="px-2 py-2" href="/users">Users</a>
+                    <a class="px-2 py-2" href="/plans">Plans</a>
+
+                    {{-- Logout --}}
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <a class="block px-2 py-2" href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); this.closest('form').submit();">
+                            {{-- {{ __('Log Out') }} --}}
+                            <i class='fa fa-sign-out font-poppins'>Sign Out</i>
+                        </a>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -119,6 +139,11 @@
         </main>
 
     </div>
+
+
+
+
+    @stack('script')
 </body>
 
 </html>
