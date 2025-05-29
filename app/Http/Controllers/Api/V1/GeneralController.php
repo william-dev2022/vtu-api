@@ -33,7 +33,7 @@ class GeneralController extends Controller
     public function init(Request $request)
     {
         $balance =  $request->user()->balance();
-        $limit = 20;
+        $limit = 1000;
 
         $transactions = Transaction::where('user_id', $request->user()->id)
             ->orderByDesc('created_at')
